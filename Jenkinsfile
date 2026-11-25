@@ -1,25 +1,32 @@
 pipeline {
 agent any
-tools {
-jdk 'JDK21'
-maven 'Maven3'
-}
 stages {
 stage('checkout') {
-steps {git branch:'main',url:'https://github.com/Selva692/spingweb-demo1.git'}
+steps {'Checking Github Project'}
 }
 stage('Build'){
 steps{
-sh 'mvn test'
+sh 'chmod +x mvnw'
+sh './mvnw clean package-DskipTests'
+}
+}
+stage('Test'){
+steps{
+sh './mvnw test'
+}
+}
+stage('Docker Build'){
+steps{
+sh 'docker bulid -t springweb-demo1:latest .'
 }
 }
 }
 post{
 success{
-echo 'Springweb build successfully!'
+echo 'Springweb and Docker build Successful!'
 }
 failure{
-echo 'Build Failed'
+echo 'Pipeline Failed.Check Console Output'
 }
 }
 }
